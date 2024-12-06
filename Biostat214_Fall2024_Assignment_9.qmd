@@ -1,0 +1,208 @@
+---
+format:
+  html:
+    embed-resources: true
+    toc: true
+error: true
+---
+# Biostat 214 2024 Assignment 9 (in-class)
+
+Name:
+
+## General Instructions
+
+Use one or more LLMs to generate, fix, and explain code solutions for the following exercises.
+
+Each section begins with a setup code block that you should run before proceeding to the exercises.
+
+## 1. Generate Code
+
+Instructions: Use one or more LLMs to generate solutions for the following exercises.
+
+### 1.1. Two arguments with error
+
+1.1.A. Write a function named `bmi()` that accepts two numeric vectors, `weight` and `height` and 
+returns the bmi for each pair of input values. 
+If any value in `weight` is non-positive, the function should stop with an error message:
+"Only positive weight values are allowed."
+If any value in `height` is non-positive, the function should stop with an error message:
+"Only positive height values are allowed."
+
+<!-- @grade 4/4 -->
+```{r}
+
+```
+
+1.1.B. Test your function using weight and height vectors of length 3 with positive values only:
+<!-- @grade 1/1 -->
+```{r}
+
+```
+
+1.1.C. Test your function using weight and height vectors of length 3 including a single negative value in `height`:
+<!-- @grade 1/1 -->
+```{r}
+
+```
+
+## 1.2. Function with warning
+
+1.2.A. Write a function named `squared()` that:
+
+- accepts a vector `x`
+- returns a vector with the square of each element of `x`
+- produces a warning if any values of `x` are negative that prints: 
+  "Negative values found!"
+
+<!-- @grade 3/3 -->
+```{r}
+
+```
+
+1.2.B. Test your function with a vector that contains no negative values:
+<!-- @grade 1/1 -->
+```{r}
+
+```
+
+1.2.C. Test your function with a vector that contains negative values:
+<!-- @grade 1/1 -->
+```{r}
+
+```
+
+## 1.3. Summarize data.frame (Bonus question)
+
+1.3.A. Write a function named `summarize` that has a single argument `x`.
+
+It should accept a data.frame and:
+
+- Print the statement `Input consists of N rows by P columns.`,
+replacing `N` and `P` with the appropriate number of rows and columns,
+- Return a list with two elements named "n_rows" and "n_columns" that
+contain the respective numbers.
+
+<!-- @grade 5/5 -->
+```{r}
+
+```
+
+1.3.B. Test your function on the `iris` data frame and assign the output to `iris_summary`:
+<!-- @grade 1/1 -->
+```{r}
+
+```
+
+## 2. Fix Code
+
+Instructions: Use one or more LLMs to fix the code errors in the following code solutions.
+
+### 2.0. Setup
+
+```{r}
+wbc <- read.csv(
+  "https://www.openml.org/data/get_csv/52350/openml_phpJNxH0q",
+  na.strings = "?"
+) 
+```
+
+### 2.1. Number of unique values
+
+Use `sapply()` and an anonymous function to get the number of unique values
+of each column of `wbc` and assign it to an object named `n_unique_vals`:
+
+***Fix the error in the following code***
+
+```{r}
+n_unique_vals <- sapply(wbc, function(x) unique(length(x)))
+```
+
+### 2.2. Number of missing values
+
+Use `sapply()` and an anonymous function to get number of missing values per
+**column** and assign to an object named `n_missing_per_column`
+
+(Note: this question and the next are making sure you understand how to use `apply()` on rows and columnbs correctly. In practice, you'd be better off using `sapply()` for operating on columns.)
+
+***Fix the error in the following code***
+
+```{r}
+n_missing_per_column <- sapply(wbc, function(x)) sum(is.na(x))
+```
+
+## 3. Explain Code
+
+Instructions: Use one or more LLMs to explain the provided code solutions. Copy-paste the 
+explanation as a comment above each call, replacing the "Paste explanation here" placeholder.
+
+### 3.0. Setup
+
+Read data into a data.table:
+
+```{r}
+library(data.table)
+dt <- fread("https://rtemis.org/pdsr/data/cardiology_clinic.csv")
+```
+
+### 3.1. Data cleaning & type conversion
+
+Identify the columns that need to be converted to dates and perform any such conversions
+***in-place*** using `as.IDate()` and specifying the appropriate format. Inspect the data to
+identify the format of each column.
+
+<!-- @grade /2 -->
+<!-- 1pt for each column -->
+```{r}
+# Paste explanation here
+dt[, c("Visit_1_Date", "Visit_2_Date") := lapply(.SD, as.IDate, format = "%y/%m/%d"), 
+  .SDcols = c("Visit_1_Date", "Visit_2_Date")]
+```
+
+### 3.2. Calculate age at Visit 1 and Visit 2
+
+Assume one year has 365.2422 days.
+Create columns 'Age_At_Visit_1' and 'Age_At_Visit_2' in-place. Both columns should be of 
+class 'numeric' and hold age in years at Visit 1 and 2, respectively.
+
+```{r}
+# Paste explanation here
+dt[, paste0("Age_At_Visit_", 1:2) := lapply(.SD, \(x) as.numeric(difftime(x, Date_of_Birth, units = "days") / 365.2422)),
+  .SDcols = c("Visit_1_Date", "Visit_2_Date")
+]
+dt
+```
+
+## 4. Definitions and Q&A
+
+### 4.1. In-place assignment
+
+Define what it means to make an assignment in-place:
+
+```{r}
+# Paste response here
+```
+
+### 4.2. In-memory vs. out-of-memory data structures
+
+What is the difference between in-memory and out-of-memory data structures?
+
+```{r}
+# Paste response here
+```
+
+What is the most efficient data structure for large in-memory data in R?
+
+```{r}
+# Paste response here
+```
+
+What is the most efficient data structure for large out-of-memory data in R?
+
+```{r}
+# Paste response here
+```
+
+## Submit
+
+Submit your completed .qmd file on the classroom GitHub repository here:
+https://github.com/rtemis-classroom/Biostat214_Fall2024/tree/main/Assignments/Assignment9
